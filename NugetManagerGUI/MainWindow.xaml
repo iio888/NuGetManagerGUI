@@ -1,0 +1,171 @@
+﻿<Window x:Class="NugetManagerGUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:hc="https://handyorg.github.io/handycontrol"
+        xmlns:local="clr-namespace:NugetManagerGUI" 
+        mc:Ignorable="d"
+        Title="NuGet Manager" Height="700" Width="1200"
+        Loaded="MainWindow_Loaded">
+    <DockPanel Margin="10">
+        <!-- Top: Title bar with actions -->
+        <Border DockPanel.Dock="Top" Padding="8" Background="#FFF" BorderBrush="#EEE" BorderThickness="0,0,0,1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="NuGet Manager" FontSize="20" FontWeight="Bold" VerticalAlignment="Center" />
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Current Source:" VerticalAlignment="Center" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding CurrentSource}" Margin="6,0,12,0" VerticalAlignment="Center"/>
+                    <Button x:Name="LoadSolutionButton" 
+                            Content="Load Solution" Height="28" Margin="0,0,8,0" Padding="10,0"/>
+                    <Button x:Name="SettingsButton" Content="Settings" Height="28" Padding="10,0"
+                            Foreground="White"
+                            Background="LightSlateGray"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Main area -->
+        <Grid DockPanel.Dock="Bottom">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="340" />
+                <ColumnDefinition Width="12" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="220" />
+            </Grid.RowDefinitions>
+
+            <!-- Left: Project and packaging controls -->
+            <DockPanel Grid.Column="0" Grid.Row="0">
+                <GroupBox Header="Pack" Margin="0,0,0,10" 
+                          DockPanel.Dock="Bottom" 
+                          VerticalAlignment="Bottom"
+                          MaxHeight="300">
+                    <StackPanel Margin="6">
+                        <TextBlock Text="Custom Version (optional)" Margin="5" />
+                        <TextBox Text="{Binding CustomVersion, Mode=TwoWay}" Margin="0,5" />
+                        <TextBlock Text="Output Directory (optional)" Margin="5"/>
+                        <TextBox Text="{Binding OutputDirectory, Mode=TwoWay}" />
+                        <Button Content="Pack Selected" Height="30" 
+                                HorizontalAlignment="Stretch"
+                                Background="CadetBlue"
+                                Foreground="White"
+                                Command="{Binding PackSelectedCommand}" Padding="10,0"
+                                Margin="0,10"/>
+                        <Button Content="Pack All" Height="30" 
+                                Command="{Binding PackAllCommand}"
+                                Foreground="White"
+                                Background="CadetBlue"
+                                HorizontalAlignment="Stretch"
+                                Padding="10,0"/>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Header="Solution Projects" Margin="0,8,0,10" 
+                          DockPanel.Dock="Bottom" 
+                          >
+                    <ListBox x:Name="ProjectsList" ItemsSource="{Binding Projects}" 
+                                 SelectionMode="Extended"
+                                 SelectionChanged="ProjectsList_SelectionChanged" />
+                </GroupBox>
+
+            </DockPanel>
+
+            <!-- Right: Tabs for browsing and operations -->
+            <Grid Grid.Column="2" Grid.Row="0" Margin="6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="8" />
+                    <ColumnDefinition Width="320" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Left: Browse Packages -->
+                <Grid Grid.Column="0" Margin="3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <DockPanel Grid.Row="0" MinHeight="30">
+                        <Button Content="Refresh" 
+                                Background="CadetBlue"
+                                Foreground="White"
+                                Command="{Binding LoadAllPackagesCommand}" DockPanel.Dock="Right" Width="70" Margin="0,0"/>
+                        <Button Content="Upload" 
+                                Foreground="Black"
+                                Background="LightGoldenrodYellow"
+                                Command="{Binding UploadCommand}" DockPanel.Dock="Right" Width="70" Margin="5,0"/>
+                        <Button x:Name="SearchButton" Content="Search" 
+                                Background="AliceBlue"
+                                Command="{Binding SearchCommand}" DockPanel.Dock="Right" Margin="5,0"/>
+                        <TextBox x:Name="SearchBox" 
+                                 Background="#FFEEEEEE"
+                                 Foreground="DarkGray"
+                                 Text="{Binding SearchQuery, Mode=TwoWay}" DockPanel.Dock="Left"/>
+                    </DockPanel>
+
+                    <ListBox x:Name="PackagesList" Grid.Row="1" Margin="0,6,0,0" ItemsSource="{Binding Packages}" SelectedItem="{Binding SelectedPackage, Mode=TwoWay}" d:ItemsSource="{d:SampleData ItemCount=3}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="0,5">
+                                    <TextBlock Text="{Binding Id}" FontWeight="SemiBold" Margin="0,3"/>
+                                    <TextBlock Text="{Binding Description}" FontSize="12" Foreground="Gray" 
+                                               TextTrimming="CharacterEllipsis" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+
+                <!-- GridSplitter -->
+                <GridSplitter Grid.Column="1" Width="8" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ShowsPreview="True" />
+
+                <!-- Right: Package Details -->
+                <Grid Grid.Column="2" Margin="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <GroupBox Header="Package Versions" Grid.Row="1" Margin="0,0,0,0">
+                        <DockPanel>
+                            <Button Content="Delete Packages" Padding="10,0" Height="30" 
+                                    Margin="10"
+                                    Background="IndianRed"
+                                    Foreground="White"
+                                    Command="{Binding DeleteCommand}" 
+                                    HorizontalAlignment="Right"
+                                    DockPanel.Dock="Bottom"/>
+                            <ListBox ItemsSource="{Binding SelectedPackage.Versions}" Margin="10"
+                                     DockPanel.Dock="Bottom"
+                                     Background="Transparent"
+                                     BorderThickness="0">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" Background="Transparent">
+                                            <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" />
+                                            <TextBlock Text="{Binding Version}" Margin="6,0,0,0" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </DockPanel>
+                    </GroupBox>
+                </Grid>
+            </Grid>
+
+            <!-- Bottom: Pack Log spanning entire width -->
+            <GroupBox Header="Manager Log" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" Margin="0,12,0,0"
+                      Padding="5"
+                      HorizontalContentAlignment="Left">
+                <ScrollViewer Height="200">
+                    <TextBox Text="{Binding PackLog}" IsReadOnly="True" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" />
+                </ScrollViewer>
+            </GroupBox>
+        </Grid>
+    </DockPanel>
+</Window>

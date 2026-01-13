@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.1.11312.151
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NugetManagerGUI", "NugetManagerGUI\NugetManagerGUI.csproj", "{FA976249-47BE-1A84-C15B-AA47E557B650}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决方案项", "{E4A58F97-424D-4E8D-83EB-2401052721E6}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestLibrary", "TestLibrary\TestLibrary.csproj", "{8CB700CC-7CAB-4155-9C25-21AD79D080F8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FA976249-47BE-1A84-C15B-AA47E557B650}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA976249-47BE-1A84-C15B-AA47E557B650}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA976249-47BE-1A84-C15B-AA47E557B650}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA976249-47BE-1A84-C15B-AA47E557B650}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D080F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D080F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D080F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D080F8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CB723E62-50AF-4560-8503-55B1404854C8}
+	EndGlobalSection
+EndGlobal
