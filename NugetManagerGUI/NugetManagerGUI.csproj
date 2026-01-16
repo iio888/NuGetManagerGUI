@@ -9,8 +9,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="nupkgs\**" />
+    <EmbeddedResource Remove="nupkgs\**" />
+    <None Remove="nupkgs\**" />
+    <Page Remove="nupkgs\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
     <PackageReference Include="HandyControl" Version="3.5.1" />
+    <PackageReference Include="NuGet.Protocol" Version="7.0.1" />
   </ItemGroup>
 
 </Project>

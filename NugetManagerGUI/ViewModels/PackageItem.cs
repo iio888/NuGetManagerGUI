@@ -9,7 +9,7 @@ public partial class PackageItem : ObservableObject
 
     public string Description { get; set; } = string.Empty;
 
-    public ObservableCollection<VersionItem> Versions { get; } = new();
+    public ObservableCollection<VersionItem> Versions { get; set;  } = new();
 
     public PackageItem(string id)
     {

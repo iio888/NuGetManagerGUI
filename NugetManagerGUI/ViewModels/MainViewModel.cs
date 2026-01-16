@@ -9,8 +9,11 @@ using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Net.Http;
+using NuGet.Protocol;
 using System.Text.Json;
 using Microsoft.Win32;
+using NuGet.Protocol.Core.Types;
+using NuGet.Common;
 
 namespace NugetManagerGUI.ViewModels;
 
@@ -81,6 +84,7 @@ public partial class MainViewModel : ObservableObject
         Packages.Add(p1);
         Packages.Add(p2);
     }
+    private NuGetPackageService? _service;
 
     public void LoadSolution(string solutionPath)
     {
@@ -247,12 +251,15 @@ public partial class MainViewModel : ObservableObject
         try
         {
             LoadSettings(); // ensure settings loaded
-
             var feedUrl = _settings.FeedUrl;
             if (string.IsNullOrWhiteSpace(feedUrl))
             {
                 return;
             }
+
+            _service = new(feedUrl);
+            var ps = await _service.GetTopPackagesAsync(includePrerelease: true);
+            Console.WriteLine(ps);
 
             Packages.Clear();
 
@@ -300,21 +307,24 @@ public partial class MainViewModel : ObservableObject
                     var description = item.TryGetProperty("description", out var d) ? d.GetString() ?? string.Empty : string.Empty;
 
                     var pkg = new PackageItem(id) { Description = description };
+                    var vs = await _service.GetAllVersionsAsync(id);
+                    pkg.Versions = new(vs.Select(v => new VersionItem(v.ToString())));
 
-                    if (item.TryGetProperty("versions", out var versions))
-                    {
-                        foreach (var v in versions.EnumerateArray())
-                        {
-                            string ver = string.Empty;
-                            if (v.ValueKind == JsonValueKind.Object && v.TryGetProperty("version", out var vp))
-                                ver = vp.GetString() ?? string.Empty;
-                            else if (v.ValueKind == JsonValueKind.String)
-                                ver = v.GetString() ?? string.Empty;
+                    //if (item.TryGetProperty("versions", out var versions))
+                    //{
+                    //    foreach (var v in versions.EnumerateArray())
+                    //    {
+                    //        string ver = string.Empty;
+                    //        if (v.ValueKind == JsonValueKind.Object && v.TryGetProperty("version", out var vp))
+                    //            ver = vp.GetString() ?? string.Empty;
+                    //        else if (v.ValueKind == JsonValueKind.String)
+                    //            ver = v.GetString() ?? string.Empty;
 
-                            if (!string.IsNullOrEmpty(ver))
-                                pkg.Versions.Add(new VersionItem(ver));
-                        }
-                    }
+                    //        if (!string.IsNullOrEmpty(ver))
+                    //            pkg.Versions.Add(new VersionItem(ver));
+                    //    }
+                    //pkg.Versions = new(pkg.Versions.Reverse());
+                    //}
 
                     // Add to UI thread
                     if (Application.Current?.Dispatcher != null && !Application.Current.Dispatcher.CheckAccess())
@@ -449,6 +459,7 @@ public partial class MainViewModel : ObservableObject
         args.Append('"').Append(packageFile).Append('"');
         args.Append(" --source ");
         args.Append('"').Append(feedUrl).Append('"');
+        args.Append(" --allow-insecure-connections");
         // include api key if provided
         if (!string.IsNullOrEmpty(apiKey))
         {
@@ -456,7 +467,7 @@ public partial class MainViewModel : ObservableObject
             args.Append('"').Append(apiKey).Append('"');
         }
         // skip duplicates to avoid errors when package already exists
-        args.Append(" --skip-duplicate");
+        //args.Append(" --skip-duplicate");
 
         var psi = new ProcessStartInfo("dotnet", args.ToString())
         {
@@ -504,6 +515,7 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task Delete()
     {
+        AppendLog($"");
         // Collect selected versions
         var deletions = new List<(PackageItem pkg, List<VersionItem> versions)>();
 
