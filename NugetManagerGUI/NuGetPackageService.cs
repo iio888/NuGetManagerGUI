@@ -38,11 +38,11 @@ public class NuGetPackageService
     /// <summary>
     /// 获取包的所有版本详细信息（包含预发布）
     /// </summary>
-    public async Task<List<PackageVersionInfo>> GetAllPackageVersionsAsync(
+    public async Task<List<VersionItem>> GetAllPackageVersionsAsync(
         string packageId,
         CancellationToken cancellationToken = default)
     {
-        var result = new List<PackageVersionInfo>();
+        var result = new List<VersionItem>();
 
         // 方法1：使用 PackageMetadataResource
         //var metadataResource = await _repository.GetResourceAsync<PackageMetadataResource>();
@@ -69,7 +69,7 @@ public class NuGetPackageService
 
         foreach (var metadata in metadatas)
         {
-            var versionInfo = new PackageVersionInfo
+            var versionInfo = new VersionItem
             {
                 Version = metadata.Version,
                 IsPrerelease = metadata.Version.IsPrerelease,
@@ -135,7 +135,7 @@ public class NuGetPackageService
 
     public async Task DeletePackageVersionAsync(
         string package,
-        PackageVersionInfo version)
+        VersionItem version)
     {
         // 获取更新资源（包含删除功能）
         var updateResource = await _repository.GetResourceAsync<PackageUpdateResource>();

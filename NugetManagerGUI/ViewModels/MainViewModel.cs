@@ -76,12 +76,12 @@ public partial class MainViewModel : ObservableObject
         Projects.Add("ProjectE");
 
         var p1 = new PackageItem("Example.Package");
-        p1.Versions.Add(new PackageVersionInfo("1.0.0"));
-        p1.Versions.Add(new PackageVersionInfo("1.1.0"));
-        p1.Versions.Add(new PackageVersionInfo("2.0.0"));
+        p1.Versions.Add(new global::VersionItem("1.0.0"));
+        p1.Versions.Add(new global::VersionItem("1.1.0"));
+        p1.Versions.Add(new global::VersionItem("2.0.0"));
 
         var p2 = new PackageItem("Another.Package");
-        p2.Versions.Add(new PackageVersionInfo("2.3.1"));
+        p2.Versions.Add(new global::VersionItem("2.3.1"));
 
         Packages.Add(p1);
         Packages.Add(p2);
@@ -330,7 +330,7 @@ public partial class MainViewModel : ObservableObject
     private async Task Delete()
     {
         // Collect selected versions
-        var deletions = new List<(PackageItem pkg, List<PackageVersionInfo> versions)>();
+        var deletions = new List<(PackageItem pkg, List<VersionItem> versions)>();
 
         foreach (var pkg in Packages.ToList())
         {
