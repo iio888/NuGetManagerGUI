@@ -109,7 +109,11 @@
                                  Text="{Binding SearchQuery, Mode=TwoWay}" DockPanel.Dock="Left"/>
                     </DockPanel>
 
-                    <ListBox x:Name="PackagesList" Grid.Row="1" Margin="0,6,0,0" ItemsSource="{Binding Packages}" SelectedItem="{Binding SelectedPackage, Mode=TwoWay}" d:ItemsSource="{d:SampleData ItemCount=3}">
+                    <ListBox x:Name="PackagesList" Grid.Row="1" Margin="0,6,0,0" 
+                             ItemsSource="{Binding Packages}" 
+                             SelectedItem="{Binding SelectedPackage, Mode=TwoWay}" 
+                             SelectionChanged="PackagesList_SelectionChanged"
+                             d:ItemsSource="{d:SampleData ItemCount=3}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Margin="0,5">
@@ -149,9 +153,9 @@
                                         <DockPanel  Background="Transparent">
                                             <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" DockPanel.Dock="Left"/>
                                             <TextBlock Text="{Binding Version}" Margin="6,0,0,0" DockPanel.Dock="Left"/>
-                                            <TextBlock Text="{Binding Time}" Margin="6,0,0,0"
-                                                        HorizontalAlignment="Right"
-                                                       DockPanel.Dock="Top"/>
+                                            <!--<TextBlock Text="{Binding Published}" Margin="6,0,0,0"
+                                                       HorizontalAlignment="Right"
+                                                       DockPanel.Dock="Right"/>-->
                                         </DockPanel>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>

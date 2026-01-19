@@ -12,8 +12,8 @@ public partial class SettingsWindow : Window
         InitializeComponent();
 
         var cfg = Settings.Load();
-        FeedUrlText.Text = cfg.FeedUrl ?? string.Empty;
-        ApiKeyText.Text = cfg.ApiKey ?? string.Empty;
+        FeedUrlText.Text = cfg?.FeedUrl ?? string.Empty;
+        ApiKeyText.Text = cfg?.ApiKey ?? string.Empty;
 
         SaveButton.Click += (s, e) =>
         {

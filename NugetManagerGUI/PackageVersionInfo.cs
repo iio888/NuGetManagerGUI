@@ -1,12 +1,23 @@
-﻿using NuGet.Versioning;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using NuGet.Versioning;
 
-public class PackageVersionInfo
+public partial class PackageVersionInfo : ObservableObject
 {
+    [ObservableProperty]
+    private bool isSelected;
+
     public NuGetVersion Version { get; set; }
     public bool IsPrerelease { get; set; }
-    public bool IsListed { get; set; }
     public DateTime Published { get; set; }
-    public string Description { get; set; }
-    public string Authors { get; set; }
+    public string? Description { get; set; }
+    public string? Authors { get; set; }
     public long? DownloadCount { get; set; }
+    public PackageVersionInfo()
+    {
+        
+    }
+    public PackageVersionInfo(string version)
+    {
+        Version = NuGetVersion.Parse(version);
+    }
 }

@@ -3,49 +3,36 @@ using NuGet.Configuration;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
+using NugetManagerGUI;
+using NugetManagerGUI.Model;
 using NugetManagerGUI.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Settings = NugetManagerGUI.Settings;
 
 public class NuGetPackageService
 {
     private readonly ILogger _logger;
     private readonly SourceRepository _repository;
     private readonly SourceCacheContext _cacheContext;
+    private readonly Settings _source;
 
-    public NuGetPackageService(string source)
+    public NuGetPackageService(Settings feed, ILogger logger)
     {
-        _logger = NullLogger.Instance;
+        _logger = logger;
         _cacheContext = new SourceCacheContext();
-        
+
         // 创建 NuGet 源
-        var packageSource = new PackageSource(source);
+        var packageSource = new PackageSource(feed.FeedUrl);
         _repository = Repository.Factory.GetCoreV3(packageSource);
-    }
-
-    /// <summary>
-    /// 获取包的所有版本（包含预发布版本）
-    /// </summary>
-    public async Task<List<NuGetVersion>> GetAllVersionsAsync(
-        string packageId, 
-        bool includeUnlisted = false,
-        CancellationToken cancellationToken = default)
-    {
-        // 获取 FindPackageByIdResource
-        var findPackageByIdResource = await _repository.GetResourceAsync<FindPackageByIdResource>();
-        
-        // 获取所有版本（包含预发布）
-        var allVersions = await findPackageByIdResource.GetAllVersionsAsync(
-            packageId,
-            _cacheContext,
-            _logger,
-            cancellationToken
-        );
-
-        return allVersions.Reverse().ToList();
+        this._source = feed;
     }
 
     /// <summary>
@@ -53,33 +40,42 @@ public class NuGetPackageService
     /// </summary>
     public async Task<List<PackageVersionInfo>> GetAllPackageVersionsAsync(
         string packageId,
-        bool includeUnlisted = false,
         CancellationToken cancellationToken = default)
     {
         var result = new List<PackageVersionInfo>();
 
         // 方法1：使用 PackageMetadataResource
-        var metadataResource = await _repository.GetResourceAsync<PackageMetadataResource>();
-        
-        var metadatas = await metadataResource.GetMetadataAsync(
-            packageId,
-            includePrerelease: true,
-            includeUnlisted: includeUnlisted,
-            _cacheContext,
+        //var metadataResource = await _repository.GetResourceAsync<PackageMetadataResource>();
+        // 获取搜索资源
+        var searchResource = await _repository.GetResourceAsync<PackageSearchResource>();
+
+        // 创建搜索过滤器
+        var searchFilter = new SearchFilter(true)
+        {
+            OrderBy = SearchOrderBy.Id,
+            IncludeDelisted = true,
+        };
+
+        var searchResults = await searchResource.SearchAsync(
+            packageId, // 搜索所有包
+            searchFilter,
+            skip: 0,
+            take: 10,
             _logger,
             cancellationToken
         );
+
+        var metadatas = await searchResults.First().GetVersionsAsync();
 
         foreach (var metadata in metadatas)
         {
             var versionInfo = new PackageVersionInfo
             {
-                Version = metadata.Identity.Version,
-                IsPrerelease = metadata.Identity.Version.IsPrerelease,
-                IsListed = metadata.IsListed,
-                Published = metadata.Published?.UtcDateTime ?? DateTime.MinValue,
-                Description = metadata.Description,
-                Authors = metadata.Authors,
+                Version = metadata.Version,
+                IsPrerelease = metadata.Version.IsPrerelease,
+                //Published = metadata.PackageSearchMetadata.Published,
+                //Description = metadata.Description,
+                //Authors = metadata.Authors,
                 DownloadCount = metadata.DownloadCount
             };
             result.Add(versionInfo);
@@ -90,156 +86,151 @@ public class NuGetPackageService
             .ToList();
     }
 
+
     /// <summary>
-    /// 获取所有版本（包括已列出和未列出的）
+    /// 获取前N个包
     /// </summary>
-    public async Task<Dictionary<bool, List<NuGetVersion>>> GetAllVersionsWithListingStatusAsync(
-        string packageId,
+    public async Task<IEnumerable<PackageItem>> GetTopPackagesAsync(
+        string search = "",
+        int count = 100,
+        bool includePrerelease = true,
         CancellationToken cancellationToken = default)
     {
-        var result = new Dictionary<bool, List<NuGetVersion>>
+        var result = new List<PackageItem>();
+
+        // 获取搜索资源
+        var searchResource = await _repository.GetResourceAsync<PackageSearchResource>();
+
+        // 创建搜索过滤器
+        var searchFilter = new SearchFilter(includePrerelease)
         {
-            { true, new List<NuGetVersion>() },   // 已列出
-            { false, new List<NuGetVersion>() }   // 未列出
+            OrderBy = SearchOrderBy.Id,
+            IncludeDelisted = true,
         };
 
-        // 获取已列出的版本
-        var listedVersions = await GetAllVersionsAsync(packageId, false, cancellationToken);
-        result[true].AddRange(listedVersions);
 
-        // 获取未列出的版本（通过包含未列出）
-        var metadataResource = await _repository.GetResourceAsync<PackageMetadataResource>();
-        
-        var allMetadata = await metadataResource.GetMetadataAsync(
-            packageId,
-            includePrerelease: true,
-            includeUnlisted: true,
-            _cacheContext,
+        var searchResults = await searchResource.SearchAsync(
+            search, // 搜索所有包
+            searchFilter,
+            skip: 0,
+            take: count,
             _logger,
             cancellationToken
         );
 
-        foreach (var metadata in allMetadata)
+        _logger.LogInformation($"加载 {searchResults.Count()} 个包");
+
+        foreach (var package in searchResults)
         {
-            var version = metadata.Identity.Version;
-            if (!listedVersions.Contains(version) && !result[false].Contains(version))
+            var packageInfo = new PackageItem(package.Identity.Id)
             {
-                result[false].Add(version);
-            }
+                Description = package.Description,
+            };
+            result.Add(packageInfo);
         }
+
 
         return result;
     }
 
-    /// <summary>
-    /// 搜索包含特定包的版本信息
-    /// </summary>
-    public async Task<List<PackageSearchResult>> SearchPackagesAsync(
-        string searchTerm,
-        bool includePrerelease = true,
-        int take = 100,
-        CancellationToken cancellationToken = default)
+    public async Task DeletePackageVersionAsync(
+        string package,
+        PackageVersionInfo version)
     {
-        var results = new List<PackageSearchResult>();
-        
-        // 获取搜索资源
-        var searchResource = await _repository.GetResourceAsync<PackageSearchResource>();
-        
-        // 创建搜索过滤器
-        var searchFilter = new SearchFilter(includePrerelease)
-        {
-            IncludeDelisted = false,
-            OrderBy = SearchOrderBy.Id
-        };
+        // 获取更新资源（包含删除功能）
+        var updateResource = await _repository.GetResourceAsync<PackageUpdateResource>();
 
-        // 执行搜索
-        var searchResults = await searchResource.SearchAsync(
-            searchTerm,
-            searchFilter,
-            skip: 0,
-            take: take,
-            _logger,
-            cancellationToken
-        );
-
-        foreach (var package in searchResults)
-        {
-            var packageResult = new PackageSearchResult
-            {
-                PackageId = package.Identity.Id,
-                LatestVersion = package.Identity.Version,
-                Description = package.Description,
-                Authors = package.Authors,
-                TotalDownloads = package.DownloadCount,
-                Versions = new List<NuGetVersion>()
-            };
-
-            // 获取该包的所有版本
-            var versions = await GetAllVersionsAsync(package.Identity.Id, false, cancellationToken);
-            packageResult.Versions.AddRange(versions);
-
-            results.Add(packageResult);
-        }
-
-        return results;
+        // 执行删除
+        await updateResource.Delete(
+            package,
+            version.Version.ToString(),
+            getApiKey: _ => _source.FeedUrl,
+            confirm: _ => true, // 确认删除，可以自定义确认逻辑
+            noServiceEndpoint: false, // 如果是V2源设为true
+            allowInsecureConnections: true,
+            log: _logger);
     }
 
-        /// <summary>
-    /// 获取前N个包（按下载量排序）
-    /// </summary>
-    public async Task<List<PackageItem>> GetTopPackagesAsync(
-        int count = 100,
-        bool includePrerelease = false,
-        CancellationToken cancellationToken = default)
+    public async Task PushPackageAsync(IList<string> packages)
     {
-        var result = new List<PackageItem>();
-        
-        // 获取搜索资源
-        var searchResource = await _repository.GetResourceAsync<PackageSearchResource>();
-        
-        // 创建搜索过滤器
-        var searchFilter = new SearchFilter(includePrerelease)
-        {
-            IncludeDelisted = false,
-            OrderBy = SearchOrderBy.Id // 按下载量排序
-        };
+        // 获取更新资源（包含删除功能）
+        var updateResource = await _repository.GetResourceAsync<PackageUpdateResource>();
+        await updateResource.PushAsync(
+            packages,
+            symbolSource: null,
+            timeoutInSecond: 10,
+            disableBuffering: false,
+            getApiKey: _ => _source.ApiKey,
+            getSymbolApiKey: _ => null,
+            noServiceEndpoint: false,
+            skipDuplicate: false,
+            allowSnupkg: true,
+            allowInsecureConnections: true,
+            log: _logger);
 
-        int pageSize = Math.Min(count, 100); // 每页最多100个
-        int pages = (int)Math.Ceiling(count / (double)pageSize);
-        
-        for (int page = 0; page < pages; page++)
+        foreach (var item in packages)
         {
-            int skip = page * pageSize;
-            int take = Math.Min(pageSize, count - result.Count);
-            
-            if (take <= 0) break;
-            
-            var searchResults = await searchResource.SearchAsync(
-                "*", // 搜索所有包
-                searchFilter,
-                skip: skip,
-                take: take,
-                _logger,
-                cancellationToken
-            );
+            _logger.LogInformation($"成功推送包: {item}");
+        }
+    }
 
-            foreach (var package in searchResults)
-            {
-                var packageInfo = new PackageItem(package.Identity.Id)
-                {
-                    Description = package.Description,
-                };
-                result.Add(packageInfo);
-            }
-            
-            // 如果返回的结果少于请求的数量，说明没有更多了
-            if (searchResults.Count() < take) break;
-            
-            // 避免请求过快，添加延迟
-            await Task.Delay(100, cancellationToken);
+    public async Task PackAsync(string project, string? version, string? output)
+    {
+        if (!File.Exists(project))
+        {
+            _logger.LogInformation($"项目文件未找到：{project}");
+            return;
         }
 
-        return result.Take(count).ToList();
+        var outDir = string.IsNullOrEmpty(output) ? Path.Combine(Path.GetDirectoryName(project) ?? ".", "../nupkgs") : output;
+        Directory.CreateDirectory(outDir);
+
+        var args = $"pack \"{project}\" -c Release -o \"{outDir}\"";
+        if (!string.IsNullOrEmpty(version))
+        {
+            args += $" /p:PackageVersion={version}";
+        }
+
+        var psi = new ProcessStartInfo("dotnet", args)
+        {
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            CreateNoWindow = true,
+            StandardOutputEncoding = Encoding.UTF8,
+            StandardErrorEncoding = Encoding.UTF8
+        };
+
+        try
+        {
+            var process = new Process() { StartInfo = psi };
+            var result = new StringBuilder();
+            var error = new StringBuilder();
+
+            process.OutputDataReceived += (s, e) => { if (e.Data != null) { result.AppendLine(e.Data); _logger.LogInformation(e.Data); } };
+            process.ErrorDataReceived += (s, e) => { if (e.Data != null) { error.AppendLine(e.Data); _logger.LogInformation(e.Data); } };
+
+            _logger.LogInformation($"开始打包：{project}");
+
+            process.Start();
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
+
+            await Task.Run(() => process.WaitForExit());
+
+            if (process.ExitCode == 0)
+            {
+                _logger.LogInformation($"打包成功：{project} \n输出目录：{outDir}");
+            }
+            else
+            {
+                _logger.LogInformation($"打包失败：{project}\n{error}");
+            }
+        }
+        catch (System.Exception ex)
+        {
+            _logger.LogWarning($"执行打包时发生异常：{ex.Message}");
+        }
     }
 }
 

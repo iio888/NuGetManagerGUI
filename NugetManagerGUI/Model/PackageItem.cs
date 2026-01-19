@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace NugetManagerGUI.ViewModels;
+namespace NugetManagerGUI.Model;
 
 public partial class PackageItem : ObservableObject
 {
@@ -9,7 +9,7 @@ public partial class PackageItem : ObservableObject
 
     public string Description { get; set; } = string.Empty;
 
-    public ObservableCollection<VersionItem> Versions { get; set;  } = new();
+    public ObservableCollection<PackageVersionInfo> Versions { get; set;  } = new();
 
     public PackageItem(string id)
     {

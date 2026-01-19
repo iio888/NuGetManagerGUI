@@ -68,4 +68,9 @@ public partial class MainWindow : Window
                 _vm.SelectedProjects.Add(s);
         }
     }
+
+    private async void PackagesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        await _vm.PackageSelectionChanged();
+    }
 }
