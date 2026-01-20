@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/解决方案项/">
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="NugetManagerGUI/NugetManagerGUI.csproj" />
+  <Project Path="TestLibrary/TestLibrary.csproj" />
+</Solution>
