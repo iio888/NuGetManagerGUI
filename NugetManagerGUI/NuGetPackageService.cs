@@ -21,13 +21,11 @@ public class NuGetPackageService
 {
     private readonly ILogger _logger;
     private readonly SourceRepository _repository;
-    private readonly SourceCacheContext _cacheContext;
     private readonly Settings _source;
 
     public NuGetPackageService(Settings feed, ILogger logger)
     {
         _logger = logger;
-        _cacheContext = new SourceCacheContext();
 
         // 创建 NuGet 源
         var packageSource = new PackageSource(feed.FeedUrl);
@@ -44,8 +42,6 @@ public class NuGetPackageService
     {
         var result = new List<VersionItem>();
 
-        // 方法1：使用 PackageMetadataResource
-        //var metadataResource = await _repository.GetResourceAsync<PackageMetadataResource>();
         // 获取搜索资源
         var searchResource = await _repository.GetResourceAsync<PackageSearchResource>();
 
@@ -75,7 +71,7 @@ public class NuGetPackageService
                 IsPrerelease = metadata.Version.IsPrerelease,
                 //Published = metadata.PackageSearchMetadata.Published,
                 //Description = metadata.Description,
-                //Authors = metadata.Authors,
+                //Authors = metadata.Version.au,
                 DownloadCount = metadata.DownloadCount
             };
             result.Add(versionInfo);

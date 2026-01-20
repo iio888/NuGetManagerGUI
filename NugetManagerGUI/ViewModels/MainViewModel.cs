@@ -87,9 +87,8 @@ public partial class MainViewModel : ObservableObject
         Packages.Add(p2);
 
         LoadSettings();
-        _service = new NuGetPackageService(_settings, new ConsoleLogger(AppendLog));
     }
-    private NuGetPackageService _service;
+    private NuGetPackageService? _service;
 
     public void LoadSolution(string solutionPath)
     {
@@ -184,7 +183,7 @@ public partial class MainViewModel : ObservableObject
             AppendLog(e.Message);
         }
 
-        var feedUrl = _settings.FeedUrl;
+        var feedUrl = _settings?.FeedUrl;
         if (string.IsNullOrWhiteSpace(feedUrl))
         {
             return;
@@ -210,10 +209,10 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task PackSelected()
     {
-        var toPack = SelectedProjects.Any() ? 
-            SelectedProjects.ToList() : 
-            (string.IsNullOrEmpty(SelectedProject) ? 
-                new List<string>() : 
+        var toPack = SelectedProjects.Any() ?
+            SelectedProjects.ToList() :
+            (string.IsNullOrEmpty(SelectedProject) ?
+                new List<string>() :
                 new List<string> { SelectedProject });
 
         if (!toPack.Any())
@@ -280,7 +279,7 @@ public partial class MainViewModel : ObservableObject
         {
             LoadSettings();
 
-            var feedUrl = _settings.FeedUrl;
+            var feedUrl = _settings?.FeedUrl;
             if (string.IsNullOrWhiteSpace(feedUrl))
             {
                 MessageBox.Show("请先在 Settings 中配置 NuGet 源。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -364,7 +363,7 @@ public partial class MainViewModel : ObservableObject
         try
         {
             LoadSettings();
-            var feedUrl = _settings.FeedUrl;
+            var feedUrl = _settings?.FeedUrl;
             if (string.IsNullOrWhiteSpace(feedUrl))
             {
                 MessageBox.Show("请先在 Settings 中配置 NuGet 源。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -409,7 +408,11 @@ public partial class MainViewModel : ObservableObject
         }
 
         _settings = Settings.Load();
-        CurrentSource = _settings!.FeedUrl;
+        CurrentSource = _settings?.FeedUrl;
+        if (_settings is not null)
+        {
+            _service = new NuGetPackageService(_settings, new ConsoleLogger(AppendLog));
+        }
     }
 
     private string ResolveProjectPath(string projectPath)
