@@ -251,6 +251,7 @@ public partial class MainViewModel : ObservableObject
             var projPath = ResolveProjectPath(rel);
             await _service.PackAsync(projPath, CustomVersion, OutputDirectory);
         }
+        AppendLog();
     }
 
     public async Task PackageSelectionChanged()
@@ -323,6 +324,7 @@ public partial class MainViewModel : ObservableObject
         {
             AppendLog($"上传失败：{ex.Message}");
         }
+        AppendLog();
     }
 
     [RelayCommand]
@@ -397,7 +399,7 @@ public partial class MainViewModel : ObservableObject
             AppendLog($"删除过程中发生错误：{ex.Message}");
         }
 
-        AppendLog("");
+        AppendLog();
     }
 
     public void LoadSettings()
@@ -427,7 +429,7 @@ public partial class MainViewModel : ObservableObject
     }
 
 
-    private void AppendLog(string line)
+    private void AppendLog(string line = "")
     {
         try
         {

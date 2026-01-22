@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -72,5 +72,11 @@ public partial class MainWindow : Window
     private async void PackagesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         await _vm.PackageSelectionChanged();
+    }
+
+    private void LogTextBox_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        // 自动滚动到底部
+        LogScrollViewer.ScrollToEnd();
     }
 }

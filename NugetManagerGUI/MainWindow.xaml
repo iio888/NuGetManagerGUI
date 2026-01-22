@@ -1,4 +1,4 @@
-﻿<Window x:Class="NugetManagerGUI.MainWindow"
+<Window x:Class="NugetManagerGUI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -169,8 +169,8 @@
             <GroupBox Header="Manager Log" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" Margin="0,12,0,0"
                       Padding="5"
                       HorizontalContentAlignment="Left">
-                <ScrollViewer Height="200">
-                    <TextBox Text="{Binding PackLog}" IsReadOnly="True" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" />
+                <ScrollViewer x:Name="LogScrollViewer" Height="200">
+                    <TextBox x:Name="LogTextBox" Text="{Binding PackLog}" IsReadOnly="True" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextChanged="LogTextBox_TextChanged" />
                 </ScrollViewer>
             </GroupBox>
         </Grid>
