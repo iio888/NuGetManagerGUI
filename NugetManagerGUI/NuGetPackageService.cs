@@ -49,7 +49,7 @@ public class NuGetPackageService
         var searchFilter = new SearchFilter(true)
         {
             OrderBy = SearchOrderBy.Id,
-            IncludeDelisted = true,
+            //IncludeDelisted = true,
         };
 
         var searchResults = await searchResource.SearchAsync(
@@ -101,7 +101,7 @@ public class NuGetPackageService
         var searchFilter = new SearchFilter(includePrerelease)
         {
             OrderBy = SearchOrderBy.Id,
-            IncludeDelisted = true,
+            //IncludeDelisted = true,
         };
 
 
