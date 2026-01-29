@@ -26,8 +26,8 @@ public class Settings
     {
         var path = GetConfigPath();
         var options = new JsonSerializerOptions { WriteIndented = true };
-        File.WriteAllText(path, JsonSerializer.Serialize(_instance, options));
         _instance = this;
+        File.WriteAllText(path, JsonSerializer.Serialize(_instance, options));
     }
 
     private static Settings? _instance;
