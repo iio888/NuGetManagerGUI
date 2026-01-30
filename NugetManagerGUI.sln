@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.1.11312.151
@@ -10,7 +10,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决�
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestLibrary", "TestLibrary\TestLibrary.csproj", "{8CB700CC-7CAB-4155-9C25-21AD79D080F8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestLibrary0", "TestLibrary0\TestLibrary0.csproj", "{8CB700CC-7CAB-4155-9C25-21AD79D080F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestLibrary1", "TestLibrary1\TestLibrary1.csproj", "{8CB700CC-7CAB-4155-9C25-21AD79D080F9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestLibrary2", "TestLibrary2\TestLibrary2.csproj", "{8CB700CC-7CAB-4155-9C25-21AD79D080FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestLibrary3", "TestLibrary3\TestLibrary3.csproj", "{8CB700CC-7CAB-4155-9C25-21AD79D080FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestLibrary4", "TestLibrary4\TestLibrary4.csproj", "{8CB700CC-7CAB-4155-9C25-21AD79D080FC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestLibrary5", "TestLibrary5\TestLibrary5.csproj", "{8CB700CC-7CAB-4155-9C25-21AD79D080FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestLibrary6", "TestLibrary6\TestLibrary6.csproj", "{8CB700CC-7CAB-4155-9C25-21AD79D080FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestLibrary7", "TestLibrary7\TestLibrary7.csproj", "{8CB700CC-7CAB-4155-9C25-21AD79D080FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestLibrary8", "TestLibrary8\TestLibrary8.csproj", "{8CB700CC-7CAB-4155-9C25-21AD79D08100}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestLibrary9", "TestLibrary9\TestLibrary9.csproj", "{8CB700CC-7CAB-4155-9C25-21AD79D08101}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +44,42 @@ Global
 		{8CB700CC-7CAB-4155-9C25-21AD79D080F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8CB700CC-7CAB-4155-9C25-21AD79D080F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8CB700CC-7CAB-4155-9C25-21AD79D080F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D080F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D080F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D080F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D080F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D080FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D080FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D080FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D080FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D080FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D080FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D080FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D080FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D080FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D080FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D080FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D080FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D080FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D080FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D080FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D080FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D080FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D080FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D080FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D080FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D080FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D080FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D080FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D080FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D08100}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D08100}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D08100}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D08100}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D08101}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D08101}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D08101}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CB700CC-7CAB-4155-9C25-21AD79D08101}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

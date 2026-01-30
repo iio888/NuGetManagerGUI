@@ -3,5 +3,14 @@
     <File Path="README.md" />
   </Folder>
   <Project Path="NugetManagerGUI/NugetManagerGUI.csproj" />
-  <Project Path="TestLibrary/TestLibrary.csproj" />
+  <Project Path="TestLibrary0/TestLibrary0.csproj" />
+  <Project Path="TestLibrary1/TestLibrary1.csproj" />
+  <Project Path="TestLibrary2/TestLibrary2.csproj" />
+  <Project Path="TestLibrary3/TestLibrary3.csproj" />
+  <Project Path="TestLibrary4/TestLibrary4.csproj" />
+  <Project Path="TestLibrary5/TestLibrary5.csproj" />
+  <Project Path="TestLibrary6/TestLibrary6.csproj" />
+  <Project Path="TestLibrary7/TestLibrary7.csproj" />
+  <Project Path="TestLibrary8/TestLibrary8.csproj" />
+  <Project Path="TestLibrary9/TestLibrary9.csproj" />
 </Solution>
